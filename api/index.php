@@ -20,6 +20,9 @@ if (!is_dir('/tmp/storage/framework/cache')) {
     mkdir('/tmp/storage/framework/cache', 0755, true);
 }
 
+// 5. Explicitly boot the application to register service providers (fixes the missing 'view' binding)
+$app->boot();
+
 try {
     $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 
@@ -31,7 +34,6 @@ try {
 
     $kernel->terminate($request, $response);
 } catch (\Throwable $e) {
-    // Force outputting the real error instead of letting Laravel's broken view handler crash
     http_response_code(500);
     echo "<h1>Original Application Error:</h1>";
     echo "<pre>" . htmlspecialchars($e->getMessage()) . "\n\n" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
