@@ -1,6 +1,6 @@
 <?php
 
-// 1. Load Composer autoloader so Laravel classes can be found
+// 1. Load Composer autoloader
 require __DIR__ . '/../vendor/autoload.php';
 
 // 2. Bootstrap the Laravel application
