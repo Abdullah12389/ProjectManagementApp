@@ -20,13 +20,19 @@ if (!is_dir('/tmp/storage/framework/cache')) {
     mkdir('/tmp/storage/framework/cache', 0755, true);
 }
 
-// 5. Handle the incoming request via Laravel's HTTP Kernel
-$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+try {
+    $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 
-$response = $kernel->handle(
-    $request = Illuminate\Http\Request::capture()
-);
+    $response = $kernel->handle(
+        $request = Illuminate\Http\Request::capture()
+    );
 
-$response->send();
+    $response->send();
 
-$kernel->terminate($request, $response);
+    $kernel->terminate($request, $response);
+} catch (\Throwable $e) {
+    // Force outputting the real error instead of letting Laravel's broken view handler crash
+    http_response_code(500);
+    echo "<h1>Original Application Error:</h1>";
+    echo "<pre>" . htmlspecialchars($e->getMessage()) . "\n\n" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+}
